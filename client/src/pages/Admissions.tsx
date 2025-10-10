@@ -1,11 +1,60 @@
+import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
 import { CheckCircle2, Calendar, FileText, DollarSign } from "lucide-react";
 
 export default function Admissions() {
+  const { toast } = useToast();
+  const [showForm, setShowForm] = useState(false);
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    phone: "",
+    program: "",
+    department: "",
+  });
+
+  const submitMutation = useMutation({
+    mutationFn: async (data: typeof formData) => {
+      await apiRequest("/api/admissions", "POST", data);
+    },
+    onSuccess: () => {
+      toast({
+        title: "Success",
+        description: "Application submitted successfully! We'll contact you soon.",
+      });
+      setShowForm(false);
+      setFormData({ fullName: "", email: "", phone: "", program: "", department: "" });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to submit application",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    submitMutation.mutate(formData);
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -17,11 +66,93 @@ export default function Admissions() {
             <p className="text-xl text-white/90 max-w-3xl mx-auto mb-8">
               Shape your future with quality education and industry-ready skills
             </p>
-            <Button size="lg" className="bg-white text-primary hover:bg-white/90" data-testid="button-apply-now">
-              Apply Now
+            <Button 
+              size="lg" 
+              className="bg-white text-primary hover:bg-white/90" 
+              onClick={() => setShowForm(!showForm)}
+              data-testid="button-apply-now"
+            >
+              {showForm ? "Hide Application Form" : "Apply Now"}
             </Button>
           </div>
         </div>
+
+        {showForm && (
+          <div className="px-6 py-16 bg-muted/30">
+            <div className="max-w-2xl mx-auto">
+              <Card className="p-8">
+                <h2 className="text-2xl font-bold mb-6">Application Form</h2>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div>
+                    <Label htmlFor="fullName">Full Name</Label>
+                    <Input
+                      id="fullName"
+                      value={formData.fullName}
+                      onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                      required
+                      data-testid="input-admission-name"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="email">Email</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      required
+                      data-testid="input-admission-email"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="phone">Phone</Label>
+                    <Input
+                      id="phone"
+                      value={formData.phone}
+                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      required
+                      data-testid="input-admission-phone"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="program">Program</Label>
+                    <Select value={formData.program} onValueChange={(value) => setFormData({ ...formData, program: value })}>
+                      <SelectTrigger data-testid="select-admission-program">
+                        <SelectValue placeholder="Select program" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="btech">B.Tech</SelectItem>
+                        <SelectItem value="mtech">M.Tech</SelectItem>
+                        <SelectItem value="mba">MBA</SelectItem>
+                        <SelectItem value="bsc">BSc</SelectItem>
+                        <SelectItem value="msc">MSc</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label htmlFor="department">Department</Label>
+                    <Select value={formData.department} onValueChange={(value) => setFormData({ ...formData, department: value })}>
+                      <SelectTrigger data-testid="select-admission-department">
+                        <SelectValue placeholder="Select department" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Computer Science & Engineering">Computer Science & Engineering</SelectItem>
+                        <SelectItem value="Electronics & Communication">Electronics & Communication</SelectItem>
+                        <SelectItem value="Mechanical Engineering">Mechanical Engineering</SelectItem>
+                        <SelectItem value="Civil Engineering">Civil Engineering</SelectItem>
+                        <SelectItem value="Chemical Engineering">Chemical Engineering</SelectItem>
+                        <SelectItem value="Applied Sciences">Applied Sciences</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <Button type="submit" className="w-full" disabled={submitMutation.isPending} data-testid="button-submit-admission">
+                    {submitMutation.isPending ? "Submitting..." : "Submit Application"}
+                  </Button>
+                </form>
+              </Card>
+            </div>
+          </div>
+        )}
 
         <div className="px-6 py-16">
           <div className="max-w-7xl mx-auto">

@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Card } from "@/components/ui/card";
@@ -5,13 +7,43 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
 
 export default function Contact() {
+  const { toast } = useToast();
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    subject: "",
+    message: "",
+  });
+
+  const submitMutation = useMutation({
+    mutationFn: async (data: typeof formData) => {
+      await apiRequest("/api/contact", "POST", data);
+    },
+    onSuccess: () => {
+      toast({
+        title: "Success",
+        description: "Message sent successfully! We'll get back to you soon.",
+      });
+      setFormData({ name: "", email: "", phone: "", subject: "", message: "" });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to send message",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Contact form submitted");
-    // todo: remove mock functionality
+    submitMutation.mutate(formData);
   };
 
   return (
@@ -66,27 +98,63 @@ export default function Contact() {
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
                       <Label htmlFor="name">Name</Label>
-                      <Input id="name" placeholder="Your name" data-testid="input-contact-name" />
+                      <Input 
+                        id="name" 
+                        placeholder="Your name" 
+                        value={formData.name}
+                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        required
+                        data-testid="input-contact-name" 
+                      />
                     </div>
                     <div>
                       <Label htmlFor="email">Email</Label>
-                      <Input id="email" type="email" placeholder="your@email.com" data-testid="input-contact-email" />
+                      <Input 
+                        id="email" 
+                        type="email" 
+                        placeholder="your@email.com"
+                        value={formData.email}
+                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                        required
+                        data-testid="input-contact-email" 
+                      />
                     </div>
                   </div>
                   <div>
                     <Label htmlFor="phone">Phone</Label>
-                    <Input id="phone" placeholder="+91 1234567890" data-testid="input-contact-phone" />
+                    <Input 
+                      id="phone" 
+                      placeholder="+91 1234567890"
+                      value={formData.phone}
+                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      data-testid="input-contact-phone" 
+                    />
                   </div>
                   <div>
                     <Label htmlFor="subject">Subject</Label>
-                    <Input id="subject" placeholder="How can we help?" data-testid="input-contact-subject" />
+                    <Input 
+                      id="subject" 
+                      placeholder="How can we help?"
+                      value={formData.subject}
+                      onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                      required
+                      data-testid="input-contact-subject" 
+                    />
                   </div>
                   <div>
                     <Label htmlFor="message">Message</Label>
-                    <Textarea id="message" placeholder="Your message..." rows={5} data-testid="input-contact-message" />
+                    <Textarea 
+                      id="message" 
+                      placeholder="Your message..." 
+                      rows={5}
+                      value={formData.message}
+                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                      required
+                      data-testid="input-contact-message" 
+                    />
                   </div>
-                  <Button type="submit" className="w-full" data-testid="button-contact-submit">
-                    Send Message
+                  <Button type="submit" className="w-full" disabled={submitMutation.isPending} data-testid="button-contact-submit">
+                    {submitMutation.isPending ? "Sending..." : "Send Message"}
                   </Button>
                 </form>
               </Card>
