@@ -5,12 +5,28 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Home from "@/pages/Home";
+import StudentLogin from "@/pages/StudentLogin";
+import StudentDashboard from "@/pages/StudentDashboard";
+import Departments from "@/pages/Departments";
+import Placements from "@/pages/Placements";
+import Admissions from "@/pages/Admissions";
+import Contact from "@/pages/Contact";
 import NotFound from "@/pages/not-found";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
+      <Route path="/student/login" component={StudentLogin} />
+      <Route path="/student/dashboard" component={StudentDashboard} />
+      <Route path="/academics/departments" component={Departments} />
+      <Route path="/placements/records" component={Placements} />
+      <Route path="/placements/companies" component={Placements} />
+      <Route path="/placements/testimonials" component={Placements} />
+      <Route path="/admissions/apply" component={Admissions} />
+      <Route path="/admissions/eligibility" component={Admissions} />
+      <Route path="/admissions/fees" component={Admissions} />
+      <Route path="/contact" component={Contact} />
       <Route component={NotFound} />
     </Switch>
   );

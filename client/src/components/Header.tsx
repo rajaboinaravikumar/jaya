@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Link } from "wouter";
-import { Menu, X, Search, ChevronDown } from "lucide-react";
+import { useLocation } from "wouter";
+import { Menu, X, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "./ThemeToggle";
 import { Input } from "@/components/ui/input";
@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/navigation-menu";
 
 export function Header() {
+  const [, setLocation] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
 
@@ -66,17 +67,19 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur">
       <div className="flex h-16 items-center justify-between px-6 max-w-7xl mx-auto">
         <div className="flex items-center gap-8">
-          <Link href="/">
-            <a className="flex items-center gap-3 hover-elevate active-elevate-2 rounded-md px-2 py-1" data-testid="link-home">
-              <div className="h-10 w-10 rounded-md bg-primary flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-lg">J</span>
-              </div>
-              <div className="hidden md:block">
-                <div className="font-heading font-bold text-lg leading-none">JITS</div>
-                <div className="text-xs text-muted-foreground">Excellence in Education</div>
-              </div>
-            </a>
-          </Link>
+          <button 
+            onClick={() => setLocation("/")}
+            className="flex items-center gap-3 hover-elevate active-elevate-2 rounded-md px-2 py-1" 
+            data-testid="link-home"
+          >
+            <div className="h-10 w-10 rounded-md bg-primary flex items-center justify-center">
+              <span className="text-primary-foreground font-bold text-lg">J</span>
+            </div>
+            <div className="hidden md:block">
+              <div className="font-heading font-bold text-lg leading-none">JITS</div>
+              <div className="text-xs text-muted-foreground">Excellence in Education</div>
+            </div>
+          </button>
 
           <nav className="hidden lg:flex items-center gap-1">
             <NavigationMenu>
@@ -90,12 +93,12 @@ export function Header() {
                       <ul className="grid w-[200px] gap-1 p-2">
                         {menu.items.map((item) => (
                           <li key={item.name}>
-                            <NavigationMenuLink asChild>
-                              <Link href={item.href}>
-                                <a className="block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover-elevate active-elevate-2" data-testid={`link-${item.name.toLowerCase().replace(/\s+/g, '-')}`}>
-                                  <div className="text-sm font-medium leading-none">{item.name}</div>
-                                </a>
-                              </Link>
+                            <NavigationMenuLink
+                              className="block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover-elevate active-elevate-2 cursor-pointer"
+                              onClick={() => setLocation(item.href)}
+                              data-testid={`link-${item.name.toLowerCase().replace(/\s+/g, '-')}`}
+                            >
+                              <div className="text-sm font-medium leading-none">{item.name}</div>
                             </NavigationMenuLink>
                           </li>
                         ))}
@@ -139,8 +142,8 @@ export function Header() {
                 <Search className="h-5 w-5" />
               </Button>
               <ThemeToggle />
-              <Button variant="default" size="sm" className="hidden md:flex" asChild data-testid="button-student-login">
-                <Link href="/student/login">Student Login</Link>
+              <Button variant="default" size="sm" className="hidden md:flex" onClick={() => setLocation("/student/login")} data-testid="button-student-login">
+                Student Login
               </Button>
               <Button
                 variant="ghost"
@@ -164,17 +167,23 @@ export function Header() {
                 <div className="font-semibold mb-2">{menu.title}</div>
                 <div className="space-y-1 ml-4">
                   {menu.items.map((item) => (
-                    <Link key={item.name} href={item.href}>
-                      <a className="block py-2 text-sm text-muted-foreground hover:text-foreground transition-colors" data-testid={`link-mobile-${item.name.toLowerCase().replace(/\s+/g, '-')}`}>
-                        {item.name}
-                      </a>
-                    </Link>
+                    <button
+                      key={item.name}
+                      onClick={() => {
+                        setLocation(item.href);
+                        setMobileMenuOpen(false);
+                      }}
+                      className="block w-full text-left py-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                      data-testid={`link-mobile-${item.name.toLowerCase().replace(/\s+/g, '-')}`}
+                    >
+                      {item.name}
+                    </button>
                   ))}
                 </div>
               </div>
             ))}
-            <Button variant="default" className="w-full" asChild data-testid="button-mobile-student-login">
-              <Link href="/student/login">Student Login</Link>
+            <Button variant="default" className="w-full" onClick={() => setLocation("/student/login")} data-testid="button-mobile-student-login">
+              Student Login
             </Button>
           </div>
         </div>
