@@ -110,3 +110,62 @@ Preferred communication style: Simple, everyday language.
 - `ISSUER_URL`: OIDC issuer URL (optional, defaults to Replit OIDC)
 - `REPLIT_DOMAINS`: Allowed domains for Replit integration (required in Replit environment)
 - `NODE_ENV`: Environment mode (development/production)
+- `RECAPTCHA_SITE_KEY`: Google reCAPTCHA v2 site key (required for form protection)
+- `RECAPTCHA_SECRET_KEY`: Google reCAPTCHA v2 secret key (required for server-side verification)
+
+## Recent Changes (October 2025)
+
+### Security Enhancements
+- **Rate Limiting**: Implemented comprehensive rate limiting system
+  - General API: 100 requests per 15 minutes
+  - Login endpoints: 5 attempts per 15 minutes (protects against brute-force attacks)
+  - Speed limiting: 500ms delay after 50 requests per 15 minutes
+  - Applied to all `/api/*` routes and authentication endpoints
+- **reCAPTCHA Integration**: Created reusable ReCaptcha component for form protection
+  - Supports Google reCAPTCHA v2
+  - Server-side verification implemented
+  - Ready to integrate with contact forms, admission forms, and login pages
+
+### Content Pages Added
+- **About Us Section**:
+  - Vision & Mission page with institutional values
+  - Governing Body page with leadership information
+  - Accreditation page with certifications and approvals
+- **Academics Section**:
+  - Undergraduate Programs page with B.Tech details
+  - Postgraduate Programs page with M.Tech offerings
+
+### Dashboard Enhancements
+- **Student Dashboard**: Connected to real API endpoints (`/api/student/dashboard`)
+  - Removed all mock data
+  - Proper loading and error states
+  - React Query integration for data fetching
+- **Admin Dashboard**: Complete UI implementation
+  - Statistics overview with cards
+  - Tabbed interface for: Students, Faculty, Departments, Events, Admissions
+  - Sample management features (ready for backend integration)
+
+### Progressive Web App (PWA)
+- **Manifest**: Created `manifest.json` with app metadata
+  - Configured for standalone display mode
+  - Custom icons and theme colors
+  - Optimized for mobile installation
+- **Service Worker**: Offline support implementation
+  - Cache-first strategy for static assets
+  - Network-first strategy for API calls
+  - Background sync capabilities
+
+### SEO & Meta Tags
+- **Enhanced HTML Head**:
+  - Comprehensive meta descriptions
+  - Open Graph tags for social media sharing
+  - Twitter Card integration
+  - Canonical URLs and viewport optimization
+  - Theme color for browsers and mobile devices
+
+## Pending Features
+1. Site-wide search with autocomplete
+2. Google Analytics/Matomo integration
+3. AI Chatbot for FAQs
+4. Interactive campus map
+5. Payment gateway for alumni donations
