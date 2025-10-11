@@ -6,10 +6,40 @@ import {
   insertStudentSchema, insertAdmissionSchema, insertEventRegistrationSchema, 
   insertContactSubmissionSchema
 } from "@shared/schema";
+import rateLimit from "express-rate-limit";
+import slowDown from "express-slow-down";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Rate limiting for login attempts
+  const loginLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 5, // limit each IP to 5 login requests per windowMs
+    message: "Too many login attempts, please try again later.",
+    standardHeaders: true,
+    legacyHeaders: false,
+  });
+
+  // General API rate limiting
+  const apiLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // limit each IP to 100 requests per windowMs
+    standardHeaders: true,
+    legacyHeaders: false,
+  });
+
+  // Slow down repeated requests
+  const speedLimiter = slowDown({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    delayAfter: 50, // allow 50 requests per 15 minutes, then...
+    delayMs: () => 500, // begin adding 500ms of delay per request above 50
+  });
+
+  // Apply rate limiting to all API routes
+  app.use('/api/', apiLimiter);
+  app.use('/api/', speedLimiter);
+
   // Auth middleware
-  await setupAuth(app);
+  await setupAuth(app, loginLimiter);
 
   // Auth routes
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
