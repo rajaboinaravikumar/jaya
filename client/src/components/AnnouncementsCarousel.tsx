@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, AlertCircle, Trophy, BookOpen } from "lucide-react";
-import { Link } from "wouter";
+import { useLocation } from "wouter";
 
 const announcements = [
   {
@@ -45,6 +45,7 @@ const announcements = [
 
 export function AnnouncementsCarousel() {
   const [current, setCurrent] = useState(0);
+  const [, setLocation] = useLocation();
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -65,25 +66,25 @@ export function AnnouncementsCarousel() {
           <div className="flex transition-transform duration-500 ease-in-out" style={{ transform: `translateX(-${current * 100}%)` }}>
             {announcements.map((announcement) => (
               <div key={announcement.id} className="w-full flex-shrink-0 px-2">
-                <Link href={announcement.href}>
-                  <a data-testid={`link-announcement-${announcement.id}`}>
-                    <Card className="p-8 hover-elevate active-elevate-2 transition-all cursor-pointer">
-                      <div className="flex items-start gap-6">
-                        <div className={`${announcement.color} p-4 rounded-lg`}>
-                          <announcement.icon className="h-8 w-8" />
-                        </div>
-                        <div className="flex-1">
-                          <Badge className="mb-3" variant="secondary">{announcement.category}</Badge>
-                          <h3 className="text-2xl font-semibold mb-3">{announcement.title}</h3>
-                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <Calendar className="h-4 w-4" />
-                            <span>{new Date(announcement.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
-                          </div>
-                        </div>
+                <Card 
+                  className="p-8 hover-elevate active-elevate-2 transition-all cursor-pointer"
+                  onClick={() => setLocation(announcement.href)}
+                  data-testid={`link-announcement-${announcement.id}`}
+                >
+                  <div className="flex items-start gap-6">
+                    <div className={`${announcement.color} p-4 rounded-lg`}>
+                      <announcement.icon className="h-8 w-8" />
+                    </div>
+                    <div className="flex-1">
+                      <Badge className="mb-3" variant="secondary">{announcement.category}</Badge>
+                      <h3 className="text-2xl font-semibold mb-3">{announcement.title}</h3>
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Calendar className="h-4 w-4" />
+                        <span>{new Date(announcement.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
                       </div>
-                    </Card>
-                  </a>
-                </Link>
+                    </div>
+                  </div>
+                </Card>
               </div>
             ))}
           </div>

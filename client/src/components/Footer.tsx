@@ -1,9 +1,11 @@
-import { Link } from "wouter";
+import { useLocation } from "wouter";
 import { Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Youtube, Instagram } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 export function Footer() {
+  const [, setLocation] = useLocation();
+  
   return (
     <footer className="bg-card border-t">
       <div className="max-w-7xl mx-auto px-6 py-16">
@@ -45,11 +47,13 @@ export function Footer() {
             <ul className="space-y-2 text-sm">
               {["About Us", "Admissions", "Academics", "Placements", "Alumni", "Contact"].map((item) => (
                 <li key={item}>
-                  <Link href={`/${item.toLowerCase().replace(/\s+/g, '-')}`}>
-                    <a className="text-muted-foreground hover:text-foreground transition-colors" data-testid={`link-footer-${item.toLowerCase().replace(/\s+/g, '-')}`}>
-                      {item}
-                    </a>
-                  </Link>
+                  <button
+                    onClick={() => setLocation(`/${item.toLowerCase().replace(/\s+/g, '-')}`)}
+                    className="text-muted-foreground hover:text-foreground transition-colors text-left"
+                    data-testid={`link-footer-${item.toLowerCase().replace(/\s+/g, '-')}`}
+                  >
+                    {item}
+                  </button>
                 </li>
               ))}
             </ul>
@@ -88,15 +92,27 @@ export function Footer() {
         <div className="border-t pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
           <p>&copy; 2026 JITS - Jain Institute of Technology & Science. All rights reserved.</p>
           <div className="flex gap-6">
-            <Link href="/privacy">
-              <a className="hover:text-foreground transition-colors" data-testid="link-privacy">Privacy Policy</a>
-            </Link>
-            <Link href="/terms">
-              <a className="hover:text-foreground transition-colors" data-testid="link-terms">Terms of Service</a>
-            </Link>
-            <Link href="/sitemap">
-              <a className="hover:text-foreground transition-colors" data-testid="link-sitemap">Sitemap</a>
-            </Link>
+            <button
+              onClick={() => setLocation("/privacy")}
+              className="hover:text-foreground transition-colors"
+              data-testid="link-privacy"
+            >
+              Privacy Policy
+            </button>
+            <button
+              onClick={() => setLocation("/terms")}
+              className="hover:text-foreground transition-colors"
+              data-testid="link-terms"
+            >
+              Terms of Service
+            </button>
+            <button
+              onClick={() => setLocation("/sitemap")}
+              className="hover:text-foreground transition-colors"
+              data-testid="link-sitemap"
+            >
+              Sitemap
+            </button>
           </div>
         </div>
       </div>
