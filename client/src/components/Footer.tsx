@@ -21,7 +21,7 @@ export function Footer() {
               </div>
             </div>
             <p className="text-sm text-muted-foreground mb-4">
-              Jain Institute of Technology & Science - Shaping future leaders through quality education and innovation.
+              Jayamukhi Institute of Technology & Science - Shaping future leaders through quality education and innovation.
             </p>
             <div className="flex gap-2">
               <Button size="icon" variant="ghost" data-testid="button-social-facebook">
@@ -64,15 +64,15 @@ export function Footer() {
             <div className="space-y-3 text-sm text-muted-foreground">
               <div className="flex items-start gap-2">
                 <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                <span>123 College Road, Technology Park, Bangalore - 560001</span>
+                <span>Chennaraopet(V), Chennaraopet(M), Warangal- 506332 , Telangana , India.</span>
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="h-4 w-4 flex-shrink-0" />
-                <span>+91 80 1234 5678</span>
+                <span>+91 93 9807 7432</span>
               </div>
               <div className="flex items-center gap-2">
                 <Mail className="h-4 w-4 flex-shrink-0" />
-                <span>info@jits.edu.in</span>
+                <span>principal@jits.in</span>
               </div>
             </div>
           </div>

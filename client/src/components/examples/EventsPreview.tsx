@@ -1,5 +1,5 @@
-import { EventsPreview } from "../EventsPreview";
+import { EventsSection } from "../EventsPreview";
 
 export default function EventsPreviewExample() {
-  return <EventsPreview />;
+  return <EventsSection />;
 }

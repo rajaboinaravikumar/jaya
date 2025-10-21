@@ -1,5 +1,5 @@
-import { AboutSection } from "../AboutSection";
+import { WhyJITSSection } from "../AboutSection";
 
 export default function AboutSectionExample() {
-  return <AboutSection />;
+  return <WhyJITSSection />;
 }

@@ -1,190 +1,310 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { Menu, X, Search } from "lucide-react";
+import { Menu, X, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ThemeToggle } from "./ThemeToggle";
-import { Input } from "@/components/ui/input";
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from "@/components/ui/navigation-menu";
 
 export function Header() {
   const [, setLocation] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
-  const megaMenuItems = [
-    {
-      title: "About Us",
-      items: [
+  // Navigation structure
+  const navigation = [
+    { name: "Home", href: "/" },
+    { 
+      name: "About JITS", 
+      href: "/about",
+      submenu: [
+        { name: "About JITS", href: "/about/jits" },
         { name: "Vision & Mission", href: "/about/vision" },
-        { name: "Governing Body", href: "/about/governing-body" },
-        { name: "Accreditation", href: "/about/accreditation" },
-      ],
+        { name: "Route Map", href: "/about/route-map" },
+        { name: "Mile Stones", href: "/about/milestones" },
+        { name: "Service Rules", href: "/about/service-rules" },
+        { name: "Society Members", href: "/about/society-members" },
+        { name: "Board Of Governors", href: "/about/governors" },
+        { name: "College Academic Council", href: "/about/academic-council" },
+        { name: "Chairman Message", href: "/about/chairman" },
+        { name: "Secretary Message", href: "/about/secretary" },
+        { name: "Joint Secretary Message", href: "/about/joint-secretary" },
+        { name: "Principal Message", href: "/about/principal" },
+        { name: "Strategic Plan", href: "/about/strategic-plan" }
+      ]
     },
-    {
-      title: "Academics",
-      items: [
-        { name: "Undergraduate Programs", href: "/academics/undergraduate" },
-        { name: "Postgraduate Programs", href: "/academics/postgraduate" },
+    { 
+      name: "IDEA Lab", 
+      href: "/idea-lab",
+      submenu: [
+        { name: "School of Engineering", href: "/schools/engineering" },
+        { name: "School of Agriculture", href: "/schools/agriculture" },
+        { name: "School of Healthcare", href: "/schools/healthcare" },
+        { name: "School of Management", href: "/schools/management" },
+        { name: "School of Sciences", href: "/schools/sciences" }
+      ]
+    },
+    { 
+      name: "Academics", 
+      href: "/academics",
+      submenu: [
+        { name: "Academic Calendars", href: "/academics/calendars" },
+        { name: "Regulations & Syllabus", href: "/academics/regulations" },
+        { name: "B.Tech", href: "/academics/btech" },
+        { name: "M.Tech", href: "/academics/mtech" },
+        { name: "MBA", href: "/academics/mba" },
         { name: "Departments", href: "/academics/departments" },
-        { name: "Syllabus", href: "/academics/syllabus" },
-      ],
+        { name: "Faculty", href: "/academics/faculty" },
+        { name: "Course Structure", href: "/academics/course-structure" }
+      ]
     },
-    {
-      title: "Admissions",
-      items: [
-        { name: "Apply Online", href: "/admissions/apply" },
-        { name: "Eligibility", href: "/admissions/eligibility" },
-        { name: "Fees", href: "/admissions/fees" },
-        { name: "Admission Tracker", href: "/admissions/tracker" },
-      ],
-    },
-    {
-      title: "Examinations",
-      items: [
+    { 
+      name: "Examinations", 
+      href: "/examinations",
+      submenu: [
+        { name: "Exam Notifications", href: "/examinations/notifications" },
         { name: "Results", href: "/examinations/results" },
-        { name: "Timetable", href: "/examinations/timetable" },
+        { name: "Schedules", href: "/examinations/schedules" },
         { name: "Hall Tickets", href: "/examinations/hall-tickets" },
-      ],
+        { name: "Downloads", href: "/examinations/downloads" }
+      ]
     },
-    {
-      title: "Placements",
-      items: [
-        { name: "Placement Records", href: "/placements/records" },
-        { name: "Companies", href: "/placements/companies" },
-        { name: "Testimonials", href: "/placements/testimonials" },
-      ],
+    { 
+      name: "Facilities", 
+      href: "/facilities",
+      submenu: [
+        { name: "Hostels", href: "/facilities/hostels" },
+        { name: "Library", href: "/facilities/library" },
+        { name: "Laboratories", href: "/facilities/laboratories" },
+        { name: "Sports", href: "/facilities/sports" },
+        { name: "Transport", href: "/facilities/transport" },
+        { name: "Virtual Tour", href: "/facilities/virtual-tour" }
+      ]
     },
+    { 
+      name: "Admissions", 
+      href: "/admissions",
+      submenu: [
+        { name: "Apply Online", href: "/admissions/apply" },
+        { name: "Fee Structure", href: "/admissions/fee-structure" },
+        { name: "Scholarships", href: "/admissions/scholarships" },
+        { name: "Eligibility", href: "/admissions/eligibility" }
+      ]
+    },
+    { name: "Placements", href: "/placements" },
+    { name: "Alumni", href: "/alumni" },
+    { name: "NAAC", href: "/naac" },
+    { name: "Contact", href: "/contact" }
   ];
 
+  const handleNavigation = (href: string) => {
+    setLocation(href);
+    setMobileMenuOpen(false);
+    setActiveDropdown(null);
+  };
+
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur">
-      <div className="flex h-16 items-center justify-between px-6 max-w-7xl mx-auto">
-        <div className="flex items-center gap-8">
-          <button 
-            onClick={() => setLocation("/")}
-            className="flex items-center gap-3 hover-elevate active-elevate-2 rounded-md px-2 py-1" 
-            data-testid="link-home"
-          >
-            <div className="h-10 w-10 rounded-md bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-lg">J</span>
-            </div>
-            <div className="hidden md:block">
-              <div className="font-heading font-bold text-lg leading-none">JITS</div>
-              <div className="text-xs text-muted-foreground">Excellence in Education</div>
-            </div>
-          </button>
+    <header className="sticky top-0 z-50 w-full bg-white shadow-lg border-b">
+      {/* Top Bar - All Three Login Buttons */}
+      <div className="bg-gradient-to-r from-blue-900 to-blue-800 text-white py-3 px-4">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          {/* Institute Name - Left */}
+          <div className="text-left">
+            <div className="text-lg font-bold tracking-tight">JAYAMUKHI INSTITUTE OF TECHNOLOGICAL SCIENCES</div>
+            <div className="text-xs opacity-90 mt-1">Autonomous | NAAC A+ Grade</div>
+          </div>
 
-          <nav className="hidden lg:flex items-center gap-1">
-            <NavigationMenu>
-              <NavigationMenuList>
-                {megaMenuItems.map((menu) => (
-                  <NavigationMenuItem key={menu.title}>
-                    <NavigationMenuTrigger data-testid={`button-menu-${menu.title.toLowerCase().replace(/\s+/g, '-')}`}>
-                      {menu.title}
-                    </NavigationMenuTrigger>
-                    <NavigationMenuContent>
-                      <ul className="grid w-[200px] gap-1 p-2">
-                        {menu.items.map((item) => (
-                          <li key={item.name}>
-                            <NavigationMenuLink
-                              className="block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover-elevate active-elevate-2 cursor-pointer"
-                              onClick={() => setLocation(item.href)}
-                              data-testid={`link-${item.name.toLowerCase().replace(/\s+/g, '-')}`}
-                            >
-                              <div className="text-sm font-medium leading-none">{item.name}</div>
-                            </NavigationMenuLink>
-                          </li>
-                        ))}
-                      </ul>
-                    </NavigationMenuContent>
-                  </NavigationMenuItem>
-                ))}
-              </NavigationMenuList>
-            </NavigationMenu>
-          </nav>
-        </div>
-
-        <div className="flex items-center gap-2">
-          {searchOpen ? (
-            <div className="flex items-center gap-2 animate-in fade-in slide-in-from-right-2 duration-200">
-              <Input
-                type="search"
-                placeholder="Search..."
-                className="w-64"
-                autoFocus
-                data-testid="input-search"
-              />
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setSearchOpen(false)}
-                data-testid="button-close-search"
-              >
-                <X className="h-5 w-5" />
-              </Button>
-            </div>
-          ) : (
-            <>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setSearchOpen(true)}
-                className="hidden md:flex"
-                data-testid="button-open-search"
-              >
-                <Search className="h-5 w-5" />
-              </Button>
-              <ThemeToggle />
-              <Button variant="default" size="sm" className="hidden md:flex" onClick={() => setLocation("/student/login")} data-testid="button-student-login">
-                Student Login
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="lg:hidden"
-                data-testid="button-mobile-menu"
-              >
-                {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-              </Button>
-            </>
-          )}
+          {/* All Three Login Buttons */}
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-white hover:bg-white/20 text-xs h-8 px-3 font-medium hidden sm:flex"
+              onClick={() => handleNavigation("/student-login")}
+            >
+              <User className="h-3 w-3 mr-1" />
+              Student
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-white hover:bg-white/20 text-xs h-8 px-3 font-medium hidden sm:flex"
+              onClick={() => handleNavigation("/faculty-login")}
+            >
+              <User className="h-3 w-3 mr-1" />
+              Faculty
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-white hover:bg-white/20 text-xs h-8 px-3 font-medium hidden sm:flex"
+              onClick={() => handleNavigation("/alumni")}
+            >
+              <User className="h-3 w-3 mr-1" />
+              Alumni
+            </Button>
+          </div>
         </div>
       </div>
 
-      {mobileMenuOpen && (
-        <div className="lg:hidden border-t bg-background animate-in slide-in-from-top-2 duration-200">
-          <div className="px-6 py-4 space-y-4">
-            {megaMenuItems.map((menu) => (
-              <div key={menu.title}>
-                <div className="font-semibold mb-2">{menu.title}</div>
-                <div className="space-y-1 ml-4">
-                  {menu.items.map((item) => (
-                    <button
-                      key={item.name}
-                      onClick={() => {
-                        setLocation(item.href);
-                        setMobileMenuOpen(false);
-                      }}
-                      className="block w-full text-left py-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-                      data-testid={`link-mobile-${item.name.toLowerCase().replace(/\s+/g, '-')}`}
-                    >
-                      {item.name}
-                    </button>
-                  ))}
+      {/* Main Navigation */}
+      <div className="bg-white">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex items-center justify-between h-16">
+            {/* Single Logo */}
+            <div className="flex items-center">
+              <button 
+                onClick={() => handleNavigation("/")}
+                className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+              >
+                <div className="h-12 w-12 bg-gradient-to-br from-red-600 to-red-800 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-lg">
+                  JITS
                 </div>
-              </div>
-            ))}
-            <Button variant="default" className="w-full" onClick={() => setLocation("/student/login")} data-testid="button-mobile-student-login">
-              Student Login
+              </button>
+            </div>
+
+            {/* Desktop Navigation */}
+            <nav className="hidden lg:flex items-center space-x-1">
+              {navigation.map((item) => (
+                <div
+                  key={item.name}
+                  className="relative"
+                  onMouseEnter={() => item.submenu && setActiveDropdown(item.name)}
+                  onMouseLeave={() => setActiveDropdown(null)}
+                >
+                  <button
+                    onClick={() => !item.submenu && handleNavigation(item.href)}
+                    className={`px-4 py-2 text-sm font-medium rounded-lg transition-all ${
+                      activeDropdown === item.name
+                        ? "text-white bg-red-600 shadow-md"
+                        : "text-gray-700 hover:text-red-600 hover:bg-red-50"
+                    }`}
+                  >
+                    {item.name}
+                    {item.submenu && (
+                      <span className="ml-1 text-xs">▾</span>
+                    )}
+                  </button>
+
+                  {/* Dropdown Menu */}
+                  {activeDropdown === item.name && item.submenu && (
+                    <div className="absolute top-full left-0 w-56 bg-white shadow-xl border rounded-lg py-2 z-50 animate-in fade-in">
+                      {item.submenu.map((subItem) => (
+                        <button
+                          key={subItem.name}
+                          onClick={() => handleNavigation(subItem.href)}
+                          className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors"
+                        >
+                          {subItem.name}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+              
+              {/* Apply Now Button */}
+              <Button 
+                className="ml-2 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 text-sm shadow-lg"
+                onClick={() => handleNavigation("/admissions/apply")}
+              >
+                Apply Now
+              </Button>
+            </nav>
+
+            {/* Mobile Menu Button */}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="lg:hidden text-gray-600 hover:text-red-600 hover:bg-red-50"
+            >
+              {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </Button>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Menu */}
+      {mobileMenuOpen && (
+        <div className="lg:hidden bg-white border-t shadow-inner animate-in slide-in-from-top">
+          <div className="max-w-7xl mx-auto px-4 py-4">
+            {/* All Three Login Buttons - Mobile */}
+            <div className="flex flex-col gap-2 mb-4">
+              <Button 
+                variant="outline"
+                className="w-full border-blue-600 text-blue-600 hover:bg-blue-50 justify-start"
+                onClick={() => handleNavigation("/student-login")}
+              >
+                <User className="h-4 w-4 mr-2" />
+                Student Login
+              </Button>
+              <Button 
+                variant="outline"
+                className="w-full border-blue-600 text-blue-600 hover:bg-blue-50 justify-start"
+                onClick={() => handleNavigation("/faculty-login")}
+              >
+                <User className="h-4 w-4 mr-2" />
+                Faculty Login
+              </Button>
+              <Button 
+                variant="outline"
+                className="w-full border-blue-600 text-blue-600 hover:bg-blue-50 justify-start"
+                onClick={() => handleNavigation("/alumni")}
+              >
+                <User className="h-4 w-4 mr-2" />
+                Alumni Login
+              </Button>
+            </div>
+
+            {/* Navigation Links */}
+            <div className="space-y-1">
+              {navigation.map((item) => (
+                <div key={item.name}>
+                  <button
+                    onClick={() => {
+                      if (item.submenu) {
+                        setActiveDropdown(activeDropdown === item.name ? null : item.name);
+                      } else {
+                        handleNavigation(item.href);
+                      }
+                    }}
+                    className="flex items-center justify-between w-full text-left px-4 py-3 text-base font-medium text-gray-700 hover:bg-red-50 hover:text-red-600 rounded-lg transition-colors"
+                  >
+                    {item.name}
+                    {item.submenu && (
+                      <span className={`transform transition-transform ${
+                        activeDropdown === item.name ? 'rotate-180' : ''
+                      }`}>
+                        ▾
+                      </span>
+                    )}
+                  </button>
+
+                  {/* Mobile Submenu */}
+                  {activeDropdown === item.name && item.submenu && (
+                    <div className="ml-4 mt-1 space-y-1 bg-gray-50 rounded-lg p-2">
+                      {item.submenu.map((subItem) => (
+                        <button
+                          key={subItem.name}
+                          onClick={() => handleNavigation(subItem.href)}
+                          className="block w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-red-100 hover:text-red-600 rounded transition-colors"
+                        >
+                          {subItem.name}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {/* Apply Now Button - Mobile */}
+            <div className="mt-6 pt-4 border-t">
+              <Button 
+                className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 text-base shadow-lg"
+                onClick={() => handleNavigation("/admissions/apply")}
+              >
+                Apply Now
+              </Button>
+            </div>
           </div>
         </div>
       )}

@@ -1,5 +1,5 @@
-import { QuickLinks } from "../QuickLinks";
+import { HeroSection } from "../QuickLinks";
 
 export default function QuickLinksExample() {
-  return <QuickLinks />;
+  return <HeroSection />;
 }

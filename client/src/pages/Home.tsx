@@ -1,10 +1,11 @@
 import { Header } from "@/components/Header";
 import { HeroSlider } from "@/components/HeroSlider";
-import { QuickLinks } from "@/components/QuickLinks";
-import { AboutSection } from "@/components/AboutSection";
+import { HeroSection } from "@/components/QuickLinks";
+import { WhyJITSSection } from "@/components/AboutSection";
 import { AnnouncementsCarousel } from "@/components/AnnouncementsCarousel";
-import { EventsPreview } from "@/components/EventsPreview";
+import { EventsSection } from "@/components/EventsPreview";
 import { Footer } from "@/components/Footer";
+import { GalleryPage } from "@/components/Gallary";
 
 export default function Home() {
   return (
@@ -12,10 +13,12 @@ export default function Home() {
       <Header />
       <main>
         <HeroSlider />
-        <QuickLinks />
-        <AboutSection />
+        <HeroSection />
+        <WhyJITSSection />
         <AnnouncementsCarousel />
-        <EventsPreview />
+        <EventsSection />
+        <GalleryPage />
+    
       </main>
       <Footer />
     </div>
